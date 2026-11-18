@@ -121,10 +121,10 @@ export default function App() {
   return (
     <div className="shell">
       <header className="topbar">
-        <div className="topbar__brand">
+        <button type="button" className="topbar__brand" onClick={() => setView('map')} aria-label="지도(홈)로 이동">
           <span className="wordmark">재개발 분석대장</span>
           <span className="topbar__tag">사업성 · 분담금 계산</span>
-        </div>
+        </button>
         <div className="topbar__actions">
           <BackupControls zones={state.zones} onImportZones={importZones} />
           <button

@@ -29,8 +29,20 @@
   padding-inline: var(--gutter);
   border-bottom: var(--rule-hair) solid var(--color-rule);
 }
-.topbar__brand { display: flex; align-items: baseline; gap: var(--space-sm); min-width: 0; }
-.wordmark { font-family: var(--font-display); font-weight: 500; font-size: var(--text-title); letter-spacing: var(--tracking-display); color: var(--color-ink); white-space: nowrap; }
+.topbar__brand {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+  min-width: 0;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+.topbar__brand:hover .wordmark { color: var(--color-accent); }
+.topbar__brand:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 4px; }
+.wordmark { font-family: var(--font-display); font-weight: 500; font-size: var(--text-title); letter-spacing: var(--tracking-display); color: var(--color-ink); white-space: nowrap; transition: color var(--dur-short) var(--ease-out); }
 .topbar__tag { font-size: var(--text-sm); color: var(--color-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .top-tabs { border-bottom: var(--rule-hair) solid var(--color-rule); }

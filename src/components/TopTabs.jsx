@@ -1,5 +1,4 @@
 const TABS = [
-  ['map', '지도'],
   ['detail', '계산기'],
   ['overview', '내 구역 비교'],
   ['reference', '전체 구역'],
