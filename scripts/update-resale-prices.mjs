@@ -49,7 +49,8 @@ function ymd(n) {
 /* API 호출 (XML 응답) */
 function fetchAptTrade(lawdCd, dealYmd) {
   return new Promise((resolve, reject) => {
-    const url = `https://apis.data.go.kr/1613000/RTMSDataSvcAptTrade/getRTMSDataSvcAptTrade`
+    // 개발계정 활용신청은 운영 엔드포인트가 아니라 Dev 엔드포인트로 호출해야 합니다.
+    const url = `https://apis.data.go.kr/1613000/RTMSDataSvcAptTradeDev/getRTMSDataSvcAptTradeDev`
       + `?serviceKey=${SERVICE_KEY}&LAWD_CD=${lawdCd}&DEAL_YMD=${dealYmd}&numOfRows=1000&pageNo=1`;
     https.get(url, (res) => {
       let data = '';
