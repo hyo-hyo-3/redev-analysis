@@ -6,6 +6,16 @@ import ScenarioTable from './components/ScenarioTable.jsx';
 import { loadZones, saveZones, emptyZone, makeId } from './storage.js';
 import { computeResult, rateScenarios, multScenarios, toNum } from './calc.js';
 
+const THEME_KEY = 'redev-analysis:theme:v1';
+
+function loadTheme() {
+  try {
+    return window.localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark';
+  } catch {
+    return 'dark';
+  }
+}
+
 function makeMissingList(zone) {
   const missing = [];
   const hasAppraisal = toNum(zone.appraisal) > 0 || (toNum(zone.official) > 0 && toNum(zone.mult) > 0);
@@ -23,9 +33,20 @@ export default function App() {
     return { zones: [emptyZone(id)], activeId: id };
   });
 
+  const [theme, setTheme] = useState(loadTheme);
+
   useEffect(() => {
     saveZones(state);
   }, [state]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    try {
+      window.localStorage.setItem(THEME_KEY, theme);
+    } catch {
+      // 저장 공간을 쓸 수 없는 환경에서는 조용히 건너뜁니다.
+    }
+  }, [theme]);
 
   const activeZone = useMemo(
     () => state.zones.find((z) => z.id === state.activeId) || state.zones[0],
@@ -67,6 +88,14 @@ export default function App() {
           <span className="wordmark">재개발 분석대장</span>
           <span className="topbar__tag">사업성 · 분담금 계산</span>
         </div>
+        <button
+          type="button"
+          className="btn btn--quiet btn--sm topbar__theme"
+          onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
+          aria-pressed={theme === 'dark'}
+        >
+          {theme === 'dark' ? '밝은 화면으로' : '어두운 화면으로'}
+        </button>
       </header>
 
       <ZoneRail

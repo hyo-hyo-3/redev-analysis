@@ -17,7 +17,7 @@ export default function ZoneRail({ zones, activeId, onSelect, onAdd, onRemove })
       </ul>
       <div className="rail-bar__actions">
         {zones.length > 0 && (
-          <button type="button" className="btn btn--quiet btn--sm" onClick={() => onRemove(activeId)}>
+          <button type="button" className="btn btn--quiet btn--danger btn--sm" onClick={() => onRemove(activeId)}>
             이 구역 삭제
           </button>
         )}

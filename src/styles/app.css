@@ -1,13 +1,14 @@
 /* Hallmark · shape: app screen · genre: modern-minimal · theme: Console (deal 2/3, seed prompt-9b74·04168438·2026-11-18·r0)
- * nav: top bar (wordmark + tag) over a zone rail · signature: the 분담금 reading, shown as a record with its formula · states: empty, error (missing input), full · console: graphite
+ * nav: top bar (wordmark + tag + light/dark switch) over a zone rail · signature: the 분담금 reading, shown as a record with its formula · states: empty, error (missing input), full · console: graphite, a step off pure black (default), paper (data-theme="light")
  * axes: dark/grotesk-sans/chromatic-amber · posture: restrained · contrast: pass · v2.0.0 */
+/* Hallmark · waive 37 · no Korean glyphs in Host Grotesk or Atkinson Hyperlegible Mono, so Hangul always fell back anyway · user asked for more natural type and less digit spacing; swapped both for Pretendard Variable (one Korean-native face, tabular-nums, no true monospace) */
 /* Hallmark · pre-emit critique: P3 H4 E4 S4 R4 V3 · weakest: P, a calculator has no argument to disagree with; gave it one anyway by treating the 분담금 as a kept record (formula, who, what) rather than a bare output field */
 @import url("./tokens.css");
 @import url("./base.css");
 
 .measured {
-  font-family: var(--font-outlier);
-  font-variant-numeric: tabular-nums slashed-zero;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
 }
 
 .is-instrument { color: var(--color-cool); }
@@ -21,7 +22,8 @@
 
 .topbar {
   display: flex;
-  align-items: baseline;
+  align-items: center;
+  justify-content: space-between;
   gap: var(--space-sm);
   height: 64px;
   padding-inline: var(--gutter);
@@ -93,7 +95,9 @@
 .field__row input:disabled { opacity: 0.55; cursor: not-allowed; }
 .btn--sm { min-height: 32px; padding: 0 var(--space-sm); font-size: var(--text-xs); }
 .btn--quiet { background: transparent; border-color: transparent; color: var(--color-muted); }
-.btn--quiet:hover { background: var(--color-paper-2); color: var(--color-bad); }
+.btn--quiet:hover { background: var(--color-paper-2); color: var(--color-ink); }
+.btn--danger { color: var(--color-bad); }
+.btn--danger:hover { background: var(--color-bad-soft); color: var(--color-bad); }
 .btn:not(.btn--quiet) {
   background: var(--color-accent);
   border-color: var(--color-accent);
@@ -105,8 +109,11 @@
 
 .layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: var(--space-lg); align-items: start; }
 .layout--scenarios { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+@media (max-width: 75rem) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+}
 @media (max-width: 60rem) {
-  .layout, .layout--scenarios { grid-template-columns: minmax(0, 1fr); }
+  .layout--scenarios { grid-template-columns: minmax(0, 1fr); }
 }
 
 .input-panels { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-md); align-content: start; }
