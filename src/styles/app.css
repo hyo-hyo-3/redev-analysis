@@ -398,3 +398,39 @@
 .news__item h4 a:hover { color: var(--color-accent); text-decoration-color: var(--color-accent); }
 .news__summary { margin: 0 0 var(--space-2xs); font-size: var(--text-sm); color: var(--color-ink-2); max-width: 70ch; }
 .news__source { margin: 0; font-size: var(--text-xs); color: var(--color-muted); }
+
+/* board */
+.board__toolbar { display: flex; justify-content: flex-end; }
+.board__empty { margin: 0; padding: var(--space-xl) 0; text-align: center; color: var(--color-muted); font-size: var(--text-sm); }
+.board__list { list-style: none; margin: 0; padding: 0; }
+.board__item { border-top: var(--rule-hair) solid var(--color-rule); }
+.board__item:first-child { border-top: none; }
+.board__itemButton {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: var(--space-md) 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.board__itemButton:hover h4 { color: var(--color-accent); }
+.board__itemButton:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.board__itemButton h4 { font-size: var(--text-md); font-weight: 500; margin: 0 0 var(--space-2xs); transition: color var(--dur-short) var(--ease-out); }
+.board__excerpt { margin: 0 0 var(--space-2xs); font-size: var(--text-sm); color: var(--color-ink-2); overflow-wrap: break-word; }
+.board__content { white-space: pre-wrap; font-size: var(--text-sm); color: var(--color-ink-2); line-height: 1.65; max-width: 70ch; }
+.board__actions { display: flex; gap: var(--space-xs); padding-top: var(--space-sm); border-top: var(--rule-hair) solid var(--color-rule); }
+.board__form { display: flex; flex-direction: column; gap: var(--space-md); }
+.board__textarea {
+  width: 100%;
+  padding: var(--space-sm);
+  border: var(--rule-hair) solid var(--color-rule-2);
+  border-radius: var(--radius-card);
+  background: var(--color-paper-3);
+  color: var(--color-ink);
+  font: 400 var(--text-md)/1.5 var(--font-body);
+  resize: vertical;
+  outline: 2px solid transparent;
+  outline-offset: -3px;
+}
+.board__textarea:focus-visible { outline-color: var(--color-focus); }

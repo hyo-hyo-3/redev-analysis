@@ -9,6 +9,7 @@ import BackupControls from './components/BackupControls.jsx';
 import ReferencePanel from './components/ReferencePanel.jsx';
 import MapView from './components/MapView.jsx';
 import NewsPanel from './components/NewsPanel.jsx';
+import BoardPanel from './components/BoardPanel.jsx';
 import { loadZones, saveZones, emptyZone, makeId } from './storage.js';
 import { computeResult, rateScenarios, multScenarios, toNum } from './calc.js';
 import { averageKnownRate } from './referenceZones.js';
@@ -155,6 +156,8 @@ export default function App() {
           <MapView />
         ) : view === 'news' ? (
           <NewsPanel />
+        ) : view === 'board' ? (
+          <BoardPanel />
         ) : view === 'overview' ? (
           <ZoneOverview zones={state.zones} onPick={(id) => setViewAndSelect('detail', id)} />
         ) : view === 'reference' ? (
