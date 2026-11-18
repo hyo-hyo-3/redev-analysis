@@ -329,6 +329,7 @@
 .ref-card__head h4 { font-size: var(--text-md); font-weight: 500; }
 .ref-card__meta { margin: var(--space-3xs) 0 0; font-size: var(--text-xs); color: var(--color-muted); }
 .ref-card__rate { display: flex; flex-direction: column; align-items: flex-end; flex-shrink: 0; text-align: right; }
+.ref-card__rateLabel { font-size: var(--text-xs); color: var(--color-muted); }
 .ref-card__rate .measured { font-size: var(--text-lg); color: var(--color-cool); }
 .ref-card__asof { font-size: var(--text-xs); color: var(--color-muted); }
 .ref-card__stage { margin: 0; font-size: var(--text-sm); color: var(--color-ink-2); }

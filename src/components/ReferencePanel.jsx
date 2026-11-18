@@ -73,6 +73,7 @@ export default function ReferencePanel({ onApply }) {
                 </p>
               </div>
               <div className="ref-card__rate">
+                <span className="ref-card__rateLabel">비례율</span>
                 <span className="measured">{z.rate != null ? `${z.rate}%` : '공개 전'}</span>
                 <span className="ref-card__asof">{z.asOf}</span>
               </div>
