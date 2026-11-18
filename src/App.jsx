@@ -4,6 +4,7 @@ import InputPanel from './components/InputPanel.jsx';
 import ResultPanel from './components/ResultPanel.jsx';
 import ScenarioTable from './components/ScenarioTable.jsx';
 import ZoneOverview from './components/ZoneOverview.jsx';
+import BackupControls from './components/BackupControls.jsx';
 import { loadZones, saveZones, emptyZone, makeId } from './storage.js';
 import { computeResult, rateScenarios, multScenarios, toNum } from './calc.js';
 
@@ -92,6 +93,12 @@ export default function App() {
     setView('detail');
   }
 
+  function importZones(imported) {
+    if (imported.length === 0) return;
+    setState((s) => ({ zones: [...s.zones, ...imported], activeId: imported[0].id }));
+    setView('detail');
+  }
+
   const missing = activeZone ? makeMissingList(activeZone) : ['구역'];
   const result = activeZone && missing.length === 0 ? computeResult(activeZone) : null;
 
@@ -102,14 +109,17 @@ export default function App() {
           <span className="wordmark">재개발 분석대장</span>
           <span className="topbar__tag">사업성 · 분담금 계산</span>
         </div>
-        <button
-          type="button"
-          className="btn btn--quiet btn--sm topbar__theme"
-          onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
-          aria-pressed={theme === 'dark'}
-        >
-          {theme === 'dark' ? '밝은 화면으로' : '어두운 화면으로'}
-        </button>
+        <div className="topbar__actions">
+          <BackupControls zones={state.zones} onImportZones={importZones} />
+          <button
+            type="button"
+            className="btn btn--quiet btn--sm topbar__theme"
+            onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
+            aria-pressed={theme === 'dark'}
+          >
+            {theme === 'dark' ? '밝은 화면으로' : '어두운 화면으로'}
+          </button>
+        </div>
       </header>
 
       <ZoneRail

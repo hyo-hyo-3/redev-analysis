@@ -72,6 +72,24 @@
 .rail__chip[aria-current="true"] { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-accent-ink); }
 .rail-bar__actions { display: flex; gap: var(--space-xs); padding-right: var(--gutter); flex-shrink: 0; }
 
+.topbar__actions { display: flex; align-items: center; gap: var(--space-sm); flex-shrink: 0; position: relative; }
+.backup { display: flex; align-items: center; gap: var(--space-2xs); position: relative; }
+.backup__status {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin: var(--space-2xs) 0 0;
+  padding: var(--space-2xs) var(--space-sm);
+  white-space: nowrap;
+  font-size: var(--text-xs);
+  color: var(--color-ink);
+  background: var(--color-paper-2);
+  border: var(--rule-hair) solid var(--color-rule-2);
+  border-radius: var(--radius-pill);
+  z-index: var(--z-dropdown);
+}
+.backup__status:empty { display: none; }
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -177,6 +195,31 @@
 .chip.is-bad { background: var(--color-bad-soft); color: var(--color-bad); border-color: transparent; }
 .chip.is-mid { background: var(--color-paper-3); color: var(--color-muted); }
 .chip-row { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+.chip--lg { min-height: 32px; padding: 0 var(--space-md); font-size: var(--text-sm); }
+
+.reading__verdict-reason { margin: 0; font-size: var(--text-xs); color: var(--color-muted); }
+
+.grade-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-xs); }
+.grade-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  padding: var(--space-sm);
+  border-radius: var(--radius-pill);
+  background: var(--color-paper-3);
+  min-width: 0;
+}
+.grade-card__label { font-size: var(--text-xs); color: var(--color-muted); }
+.grade-card__grade { font-size: var(--text-lg); font-weight: 500; }
+.grade-card.is-ok .grade-card__grade { color: var(--color-ok); }
+.grade-card.is-bad .grade-card__grade { color: var(--color-bad); }
+.grade-card.is-mid .grade-card__grade { color: var(--color-muted); }
+.grade-card__note { font-size: var(--text-xs); color: var(--color-muted); overflow-wrap: break-word; }
+@media (max-width: 30rem) {
+  .grade-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.reading__disclaimer { margin: 0; font-size: var(--text-xs); color: var(--color-muted); }
 
 /* stats */
 .stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-sm) 0; padding-top: var(--space-sm); border-top: var(--rule-hair) solid var(--color-rule); }

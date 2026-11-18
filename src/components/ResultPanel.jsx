@@ -19,13 +19,13 @@ export default function ResultPanel({ zone, result, missing }) {
     );
   }
 
-  const { appraisal, cur, premium, premiumPct, safetyGrade, verdict } = result;
+  const { appraisal, cur, premium, premiumPct, verdict, verdictReason, grades } = result;
 
   return (
     <section className="panel reading">
       <header className="reading__head">
         <h3>분담금</h3>
-        <span className={'chip ' + gradeClass(verdict)}>종합판정 {gradeLabel(verdict)}</span>
+        <span className={'chip chip--lg ' + gradeClass(verdict)}>종합판정 {gradeLabel(verdict)}</span>
       </header>
       <p className="reading__value measured" aria-live="polite">
         {moneyKo(cur.contribution)}
@@ -76,11 +76,34 @@ export default function ResultPanel({ zone, result, missing }) {
         </div>
       </div>
 
-      <div className="chip-row">
-        <span className={'chip ' + gradeClass(safetyGrade)}>
-          안전마진 {gradeLabel(safetyGrade)} · 시세 10% 하락 가정
-        </span>
+      <p className="reading__verdict-reason">{verdictReason}</p>
+
+      <div className="grade-grid">
+        <div className={'grade-card ' + gradeClass(grades.margin.grade)}>
+          <span className="grade-card__label">총수익률</span>
+          <span className="grade-card__grade">{gradeLabel(grades.margin.grade)}</span>
+          <span className="grade-card__note">{grades.margin.note}</span>
+        </div>
+        <div className={'grade-card ' + gradeClass(grades.safety.grade)}>
+          <span className="grade-card__label">안전마진</span>
+          <span className="grade-card__grade">{gradeLabel(grades.safety.grade)}</span>
+          <span className="grade-card__note">{grades.safety.note}</span>
+        </div>
+        <div className={'grade-card ' + gradeClass(grades.rate.grade)}>
+          <span className="grade-card__label">비례율</span>
+          <span className="grade-card__grade">{gradeLabel(grades.rate.grade)}</span>
+          <span className="grade-card__note">{grades.rate.note}</span>
+        </div>
+        <div className={'grade-card ' + gradeClass(grades.speed.grade)}>
+          <span className="grade-card__label">사업속도</span>
+          <span className="grade-card__grade">{gradeLabel(grades.speed.grade)}</span>
+          <span className="grade-card__note">{grades.speed.note}</span>
+        </div>
       </div>
+      <p className="reading__disclaimer">
+        총수익률이 뚜렷하게 좋거나(100% 이상 → 상) 나쁘면(40% 미만 → 하) 그대로 정해지고, 애매한 중간일 때만 나머지 세 기준이 한쪽으로
+        쏠리면 한 단계 바뀝니다. 세금·이주비 이자는 뺀 간이 판정입니다.
+      </p>
     </section>
   );
 }

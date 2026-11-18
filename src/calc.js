@@ -28,26 +28,47 @@ export function calcAt(fields, rate, appraisal) {
   return { rate, appraisal, rights, contribution, invest, profit, returnPct };
 }
 
+// 네 가지 기준을 각각 상(3)·중(2)·하(1)로 매기고, 총수익률이 뚜렷하면 그대로,
+// 애매하면 나머지 세 기준의 쏠림으로 종합판정을 정합니다. 세금·이주비 이자는
+// 빠진 간이 판정입니다.
 export function computeResult(fields) {
   const appraisal = resolveAppraisal(fields);
   const rate = toNum(fields.rate);
   const resale = toNum(fields.resale);
   const buy = toNum(fields.buy);
+  const years = toNum(fields.years);
   const cur = calcAt(fields, rate, appraisal);
+  const y = cur.returnPct ?? 0;
 
   const premium = buy - appraisal;
   const premiumPct = appraisal > 0 ? (premium / appraisal) * 100 : null;
 
   const profitDown10 = resale * 0.9 - cur.invest;
+
+  const marginGrade = y >= 100 ? 3 : y >= 40 ? 2 : 1;
   const safetyGrade = profitDown10 >= 0 ? 3 : cur.profit >= 0 ? 2 : 1;
+  const rateGrade = rate >= 105 ? 3 : rate >= 100 ? 2 : 1;
+  const speedGrade = years > 0 ? (years <= 6 ? 3 : years <= 13 ? 2 : 1) : 2;
 
-  let verdict = 2;
-  if (cur.returnPct !== null) {
-    if (cur.returnPct >= 50 && safetyGrade >= 2) verdict = 3;
-    else if (cur.returnPct < 0 || safetyGrade === 1) verdict = 1;
-  }
+  const modSum = safetyGrade - 2 + (rateGrade - 2) + (speedGrade - 2);
+  const midVerdict = modSum >= 1 ? 3 : modSum <= -1 ? 1 : 2;
+  const verdict = marginGrade === 3 ? 3 : marginGrade === 1 ? 1 : midVerdict;
 
-  return { appraisal, cur, premium, premiumPct, profitDown10, safetyGrade, verdict };
+  const grades = {
+    margin: { grade: marginGrade, note: y >= 100 ? '차익이 투입금보다 큼' : y >= 40 ? '투입금의 40% 이상 차익' : '차익이 크지 않음' },
+    safety: {
+      grade: safetyGrade,
+      note: profitDown10 >= 0 ? '시세 −10%에도 이익' : cur.profit >= 0 ? '지금 시세에서만 이익' : '지금도 손실',
+    },
+    rate: { grade: rateGrade, note: rate >= 105 ? '평균보다 높음' : rate >= 100 ? '평균 수준' : '평균보다 낮음' },
+    speed: {
+      grade: speedGrade,
+      note: years > 0 ? (years <= 6 ? '매우 빠른 사업' : years <= 13 ? '보통 속도' : '오래 걸리는 사업') : '기간 미입력',
+    },
+  };
+  const verdictReason = `총수익률 ${cur.invest > 0 ? y.toFixed(0) : '—'}% · 비례율 ${rate.toFixed(0)}%${years > 0 ? ` · ${years}년 가정` : ''}`;
+
+  return { appraisal, cur, premium, premiumPct, profitDown10, verdict, verdictReason, grades };
 }
 
 export function gradeLabel(g) {
