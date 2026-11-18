@@ -1,5 +1,4 @@
-export default function ZoneRail({ zones, activeId, onSelect, onAdd, onRemove, view, onSetView }) {
-  const inDetail = view === 'detail';
+export default function ZoneRail({ zones, activeId, onSelect, onAdd, onRemove }) {
   return (
     <div className="rail-bar">
       <ul className="rail" aria-label="등록된 구역">
@@ -8,8 +7,8 @@ export default function ZoneRail({ zones, activeId, onSelect, onAdd, onRemove, v
             <button
               type="button"
               className="rail__chip"
-              aria-current={z.id === activeId && inDetail ? 'true' : undefined}
-              onClick={() => onSetView('detail', z.id)}
+              aria-current={z.id === activeId ? 'true' : undefined}
+              onClick={() => onSelect(z.id)}
             >
               {z.name || '이름 없는 구역'}
             </button>
@@ -17,26 +16,9 @@ export default function ZoneRail({ zones, activeId, onSelect, onAdd, onRemove, v
         ))}
       </ul>
       <div className="rail-bar__actions">
-        {inDetail ? (
-          <>
-            <button type="button" className="btn btn--quiet btn--sm" onClick={() => onSetView('map')}>
-              지도
-            </button>
-            <button type="button" className="btn btn--quiet btn--sm" onClick={() => onSetView('overview')}>
-              내 구역 비교
-            </button>
-            <button type="button" className="btn btn--quiet btn--sm" onClick={() => onSetView('reference')}>
-              전체 구역
-            </button>
-            {zones.length > 0 && (
-              <button type="button" className="btn btn--quiet btn--danger btn--sm" onClick={() => onRemove(activeId)}>
-                이 구역 삭제
-              </button>
-            )}
-          </>
-        ) : (
-          <button type="button" className="btn btn--quiet btn--sm" onClick={() => onSetView('detail')}>
-            구역 보기
+        {zones.length > 0 && (
+          <button type="button" className="btn btn--quiet btn--danger btn--sm" onClick={() => onRemove(activeId)}>
+            이 구역 삭제
           </button>
         )}
         <button type="button" className="btn btn--sm" onClick={onAdd}>

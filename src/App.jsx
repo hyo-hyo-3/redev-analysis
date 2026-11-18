@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import ZoneRail from './components/ZoneRail.jsx';
+import TopTabs from './components/TopTabs.jsx';
 import InputPanel from './components/InputPanel.jsx';
 import ResultPanel from './components/ResultPanel.jsx';
 import ScenarioTable from './components/ScenarioTable.jsx';
@@ -46,7 +47,7 @@ export default function App() {
   });
 
   const [theme, setTheme] = useState(loadTheme);
-  const [view, setView] = useState('detail');
+  const [view, setView] = useState('map');
 
   useEffect(() => {
     saveZones(state);
@@ -136,14 +137,17 @@ export default function App() {
         </div>
       </header>
 
-      <ZoneRail
-        zones={state.zones}
-        activeId={activeZone?.id}
-        onAdd={addZone}
-        onRemove={removeZone}
-        view={view}
-        onSetView={setViewAndSelect}
-      />
+      <TopTabs view={view} onSetView={setView} />
+
+      {view === 'detail' && (
+        <ZoneRail
+          zones={state.zones}
+          activeId={activeZone?.id}
+          onSelect={(id) => setViewAndSelect('detail', id)}
+          onAdd={addZone}
+          onRemove={removeZone}
+        />
+      )}
 
       <main className="container main">
         {view === 'map' ? (
@@ -184,10 +188,12 @@ export default function App() {
           )
         )}
 
-        <footer className="note">
-          <p>권리가액 = 감정평가액 × 비례율. 분담금 = 조합원 분양가 − 권리가액. 총투입금 = 매매가 + 분담금 + 기타비용.</p>
-          <p>세금, 이주비 이자, 사업 지연 비용은 반영하지 않은 간이 계산입니다. 비례율과 확정 감정평가액은 관리처분계획(안)에서 바뀔 수 있습니다. 입력한 숫자는 이 기기에만 저장됩니다.</p>
-        </footer>
+        {(view === 'detail' || view === 'overview') && (
+          <footer className="note">
+            <p>권리가액 = 감정평가액 × 비례율. 분담금 = 조합원 분양가 − 권리가액. 총투입금 = 매매가 + 분담금 + 기타비용.</p>
+            <p>세금, 이주비 이자, 사업 지연 비용은 반영하지 않은 간이 계산입니다. 비례율과 확정 감정평가액은 관리처분계획(안)에서 바뀔 수 있습니다. 입력한 숫자는 이 기기에만 저장됩니다.</p>
+          </footer>
+        )}
       </main>
     </div>
   );

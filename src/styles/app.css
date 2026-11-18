@@ -33,6 +33,25 @@
 .wordmark { font-family: var(--font-display); font-weight: 500; font-size: var(--text-title); letter-spacing: var(--tracking-display); color: var(--color-ink); white-space: nowrap; }
 .topbar__tag { font-size: var(--text-sm); color: var(--color-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+.top-tabs { border-bottom: var(--rule-hair) solid var(--color-rule); }
+.top-tabs ul { display: flex; gap: var(--space-lg); margin: 0; padding: 0 var(--gutter); list-style: none; overflow-x: auto; }
+.top-tabs__tab {
+  display: inline-flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 var(--space-2xs);
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--color-muted);
+  font: 500 var(--text-sm)/1 var(--font-body);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out);
+}
+.top-tabs__tab:hover { color: var(--color-ink-2); }
+.top-tabs__tab:focus-visible { outline: 2px solid var(--color-focus); outline-offset: -2px; }
+.top-tabs__tab[aria-current="true"] { color: var(--color-ink); border-bottom-color: var(--color-accent); }
+
 .rail-bar {
   display: flex;
   align-items: center;
