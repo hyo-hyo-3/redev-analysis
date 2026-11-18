@@ -322,3 +322,33 @@
 
 .pager { display: flex; align-items: center; justify-content: center; gap: var(--space-md); padding-top: var(--space-sm); }
 .pager__status { font-size: var(--text-sm); color: var(--color-muted); }
+
+/* map */
+.map-view__layout { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: var(--space-md); align-items: start; }
+.map-view__canvas {
+  position: relative;
+  height: 560px;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: var(--color-paper-3);
+  border: var(--rule-hair) solid var(--color-rule);
+}
+.map-view__loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--color-muted); font-size: var(--text-sm); margin: 0; }
+.map-view__list { display: flex; flex-direction: column; gap: var(--space-xs); max-height: 560px; }
+.map-view__bulk { display: flex; gap: var(--space-xs); }
+.map-view__checklist { list-style: none; margin: 0; padding: 0; overflow-y: auto; border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-card); }
+.map-view__checklist li { border-top: var(--rule-hair) solid var(--color-rule); }
+.map-view__checklist li:first-child { border-top: none; }
+.map-view__checklist label { display: flex; align-items: center; gap: var(--space-xs); padding: var(--space-xs) var(--space-sm); font-size: var(--text-sm); cursor: pointer; }
+.map-view__checklist input[type="checkbox"] { flex-shrink: 0; width: 16px; height: 16px; accent-color: var(--color-accent); }
+.map-view__checklist input[type="checkbox"]:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.map-view__gu { margin-left: auto; font-size: var(--text-xs); color: var(--color-muted); flex-shrink: 0; }
+.map-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+@media (max-width: 60rem) {
+  .map-view__layout { grid-template-columns: minmax(0, 1fr); }
+  .map-view__canvas { height: 360px; }
+  .map-view__list { max-height: 320px; }
+}
+
+.map-info { display: flex; flex-direction: column; gap: var(--space-3xs); padding: var(--space-sm); background: var(--color-paper-2); color: var(--color-ink); border-radius: var(--radius-pill); font-size: var(--text-sm); max-width: 220px; }
+.map-info span { font-size: var(--text-xs); color: var(--color-muted); }

@@ -19,6 +19,9 @@ export default function ZoneRail({ zones, activeId, onSelect, onAdd, onRemove, v
       <div className="rail-bar__actions">
         {inDetail ? (
           <>
+            <button type="button" className="btn btn--quiet btn--sm" onClick={() => onSetView('map')}>
+              지도
+            </button>
             <button type="button" className="btn btn--quiet btn--sm" onClick={() => onSetView('overview')}>
               내 구역 비교
             </button>

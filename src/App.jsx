@@ -6,6 +6,7 @@ import ScenarioTable from './components/ScenarioTable.jsx';
 import ZoneOverview from './components/ZoneOverview.jsx';
 import BackupControls from './components/BackupControls.jsx';
 import ReferencePanel from './components/ReferencePanel.jsx';
+import MapView from './components/MapView.jsx';
 import { loadZones, saveZones, emptyZone, makeId } from './storage.js';
 import { computeResult, rateScenarios, multScenarios, toNum } from './calc.js';
 import { averageKnownRate } from './referenceZones.js';
@@ -145,7 +146,9 @@ export default function App() {
       />
 
       <main className="container main">
-        {view === 'overview' ? (
+        {view === 'map' ? (
+          <MapView />
+        ) : view === 'overview' ? (
           <ZoneOverview zones={state.zones} onPick={(id) => setViewAndSelect('detail', id)} />
         ) : view === 'reference' ? (
           <ReferencePanel onApply={createFromReference} />
