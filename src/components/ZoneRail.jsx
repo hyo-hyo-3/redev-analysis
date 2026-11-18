@@ -1,4 +1,4 @@
-export default function ZoneRail({ zones, activeId, onSelect, onAdd, onRemove }) {
+export default function ZoneRail({ zones, activeId, onSelect, onAdd, onRemove, view, onToggleView }) {
   return (
     <div className="rail-bar">
       <ul className="rail" aria-label="등록된 구역">
@@ -16,7 +16,15 @@ export default function ZoneRail({ zones, activeId, onSelect, onAdd, onRemove })
         ))}
       </ul>
       <div className="rail-bar__actions">
-        {zones.length > 0 && (
+        <button
+          type="button"
+          className="btn btn--quiet btn--sm"
+          aria-pressed={view === 'overview'}
+          onClick={onToggleView}
+        >
+          {view === 'overview' ? '구역 보기' : '전체 구역 보기'}
+        </button>
+        {view !== 'overview' && zones.length > 0 && (
           <button type="button" className="btn btn--quiet btn--danger btn--sm" onClick={() => onRemove(activeId)}>
             이 구역 삭제
           </button>

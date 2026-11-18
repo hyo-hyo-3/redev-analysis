@@ -3,6 +3,7 @@ import ZoneRail from './components/ZoneRail.jsx';
 import InputPanel from './components/InputPanel.jsx';
 import ResultPanel from './components/ResultPanel.jsx';
 import ScenarioTable from './components/ScenarioTable.jsx';
+import ZoneOverview from './components/ZoneOverview.jsx';
 import { loadZones, saveZones, emptyZone, makeId } from './storage.js';
 import { computeResult, rateScenarios, multScenarios, toNum } from './calc.js';
 
@@ -34,6 +35,7 @@ export default function App() {
   });
 
   const [theme, setTheme] = useState(loadTheme);
+  const [view, setView] = useState('detail');
 
   useEffect(() => {
     saveZones(state);
@@ -78,6 +80,11 @@ export default function App() {
     setState((s) => ({ ...s, activeId: id }));
   }
 
+  function pickFromOverview(id) {
+    selectZone(id);
+    setView('detail');
+  }
+
   const missing = activeZone ? makeMissingList(activeZone) : ['구역'];
   const result = activeZone && missing.length === 0 ? computeResult(activeZone) : null;
 
@@ -104,37 +111,43 @@ export default function App() {
         onSelect={selectZone}
         onAdd={addZone}
         onRemove={removeZone}
+        view={view}
+        onToggleView={() => setView((v) => (v === 'overview' ? 'detail' : 'overview'))}
       />
 
       <main className="container main">
-        {activeZone && (
-          <>
-            <div className="layout">
-              <InputPanel zone={activeZone} onChange={updateZone} />
-              <ResultPanel zone={activeZone} result={result} missing={missing} />
-            </div>
-
-            {result && (
-              <div className="layout layout--scenarios">
-                <ScenarioTable
-                  title="비례율 시나리오"
-                  caption="비례율만 바꿨을 때의 결과입니다. 현재 입력값을 강조합니다."
-                  rows={rateScenarios(activeZone)}
-                  headLabel="비례율"
-                  getHeadValue={(r) => `${r.rate.toFixed(0)}%`}
-                  getHeadNote={(r) => (r.isCurrent ? '현재 입력값' : null)}
-                />
-                <ScenarioTable
-                  title="감정평가 배율 시나리오"
-                  caption="배율만 바꿨을 때의 결과입니다. 배율이 높을수록 분담금이 줄어듭니다."
-                  rows={multScenarios(activeZone)}
-                  headLabel="배율"
-                  getHeadValue={(r) => `${r.mult.toFixed(2)}배`}
-                  getHeadNote={(r) => (r.isCurrent ? '현재 입력값' : null)}
-                />
+        {view === 'overview' ? (
+          <ZoneOverview zones={state.zones} onPick={pickFromOverview} />
+        ) : (
+          activeZone && (
+            <>
+              <div className="layout">
+                <InputPanel zone={activeZone} onChange={updateZone} />
+                <ResultPanel zone={activeZone} result={result} missing={missing} />
               </div>
-            )}
-          </>
+
+              {result && (
+                <div className="layout layout--scenarios">
+                  <ScenarioTable
+                    title="비례율 시나리오"
+                    caption="비례율만 바꿨을 때의 결과입니다. 현재 입력값을 강조합니다."
+                    rows={rateScenarios(activeZone)}
+                    headLabel="비례율"
+                    getHeadValue={(r) => `${r.rate.toFixed(0)}%`}
+                    getHeadNote={(r) => (r.isCurrent ? '현재 입력값' : null)}
+                  />
+                  <ScenarioTable
+                    title="감정평가 배율 시나리오"
+                    caption="배율만 바꿨을 때의 결과입니다. 배율이 높을수록 분담금이 줄어듭니다."
+                    rows={multScenarios(activeZone)}
+                    headLabel="배율"
+                    getHeadValue={(r) => `${r.mult.toFixed(2)}배`}
+                    getHeadNote={(r) => (r.isCurrent ? '현재 입력값' : null)}
+                  />
+                </div>
+              )}
+            </>
+          )
         )}
 
         <footer className="note">

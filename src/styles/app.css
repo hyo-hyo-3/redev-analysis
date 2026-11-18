@@ -214,5 +214,11 @@
 .scenario tbody tr.is-current th, .scenario tbody tr.is-current td { color: var(--color-ink); }
 .scenario__note { font-size: var(--text-xs); color: var(--color-accent); font-weight: 400; font-family: var(--font-body); }
 
+.overview__row { cursor: pointer; transition: background-color var(--dur-short) var(--ease-out); }
+.overview__row:hover { background: var(--color-paper-3); }
+.overview__row:hover th[scope="row"] { background: var(--color-paper-3); }
+.overview__row:focus-visible { outline: 2px solid var(--color-focus); outline-offset: -2px; }
+.overview__incomplete { color: var(--color-muted); font-style: normal; }
+
 .note { padding-top: var(--space-lg); border-top: var(--rule-hair) solid var(--color-rule); display: flex; flex-direction: column; gap: var(--space-2xs); }
 .note p { margin: 0; font-size: var(--text-xs); color: var(--color-muted); max-width: 75ch; }
