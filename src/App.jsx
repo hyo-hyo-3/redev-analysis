@@ -17,6 +17,13 @@ function loadTheme() {
   }
 }
 
+function nextZoneName(zones) {
+  const used = new Set(zones.map((z) => z.name));
+  let n = zones.length + 1;
+  while (used.has(`구역 ${n}`)) n += 1;
+  return `구역 ${n}`;
+}
+
 function makeMissingList(zone) {
   const missing = [];
   const hasAppraisal = toNum(zone.appraisal) > 0 || (toNum(zone.official) > 0 && toNum(zone.mult) > 0);
@@ -31,7 +38,7 @@ export default function App() {
     const loaded = loadZones();
     if (loaded && loaded.zones.length > 0) return loaded;
     const id = makeId();
-    return { zones: [emptyZone(id)], activeId: id };
+    return { zones: [emptyZone(id, '구역 1')], activeId: id };
   });
 
   const [theme, setTheme] = useState(loadTheme);
@@ -61,7 +68,7 @@ export default function App() {
 
   function addZone() {
     const id = makeId();
-    setState((s) => ({ zones: [...s.zones, emptyZone(id)], activeId: id }));
+    setState((s) => ({ zones: [...s.zones, emptyZone(id, nextZoneName(s.zones))], activeId: id }));
   }
 
   function removeZone(id) {
@@ -69,7 +76,7 @@ export default function App() {
       const zones = s.zones.filter((z) => z.id !== id);
       if (zones.length === 0) {
         const newId = makeId();
-        return { zones: [emptyZone(newId)], activeId: newId };
+        return { zones: [emptyZone(newId, '구역 1')], activeId: newId };
       }
       const activeId = s.activeId === id ? zones[0].id : s.activeId;
       return { zones, activeId };

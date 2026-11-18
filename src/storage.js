@@ -20,10 +20,10 @@ export function saveZones(data) {
   }
 }
 
-export function emptyZone(id) {
+export function emptyZone(id, name = '') {
   return {
     id,
-    name: '',
+    name,
     location: '',
     stage: '',
     note: '',
