@@ -55,7 +55,7 @@ export default function NewsPanel() {
                 {n.title}
               </a>
             </h4>
-            <p className="news__summary">{n.summary}</p>
+            {n.summary && <p className="news__summary">{n.summary}</p>}
             <p className="news__source">{n.source}</p>
           </li>
         ))}

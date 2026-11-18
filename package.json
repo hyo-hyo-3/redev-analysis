@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "update-resale": "node --env-file=.env scripts/update-resale-prices.mjs",
-    "geocode-zones": "node --env-file=.env scripts/geocode-zones.mjs"
+    "geocode-zones": "node --env-file=.env scripts/geocode-zones.mjs",
+    "update-news": "node scripts/update-news.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
