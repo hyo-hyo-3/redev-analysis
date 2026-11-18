@@ -1,0 +1,30 @@
+export default function ZoneRail({ zones, activeId, onSelect, onAdd, onRemove }) {
+  return (
+    <div className="rail-bar">
+      <ul className="rail" aria-label="등록된 구역">
+        {zones.map((z) => (
+          <li key={z.id}>
+            <button
+              type="button"
+              className="rail__chip"
+              aria-current={z.id === activeId ? 'true' : undefined}
+              onClick={() => onSelect(z.id)}
+            >
+              {z.name || '이름 없는 구역'}
+            </button>
+          </li>
+        ))}
+      </ul>
+      <div className="rail-bar__actions">
+        {zones.length > 0 && (
+          <button type="button" className="btn btn--quiet btn--sm" onClick={() => onRemove(activeId)}>
+            이 구역 삭제
+          </button>
+        )}
+        <button type="button" className="btn btn--sm" onClick={onAdd}>
+          새 구역
+        </button>
+      </div>
+    </div>
+  );
+}
