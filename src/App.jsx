@@ -5,8 +5,10 @@ import ResultPanel from './components/ResultPanel.jsx';
 import ScenarioTable from './components/ScenarioTable.jsx';
 import ZoneOverview from './components/ZoneOverview.jsx';
 import BackupControls from './components/BackupControls.jsx';
+import ReferencePanel from './components/ReferencePanel.jsx';
 import { loadZones, saveZones, emptyZone, makeId } from './storage.js';
 import { computeResult, rateScenarios, multScenarios, toNum } from './calc.js';
+import { averageKnownRate } from './referenceZones.js';
 
 const THEME_KEY = 'redev-analysis:theme:v1';
 
@@ -84,18 +86,29 @@ export default function App() {
     });
   }
 
-  function selectZone(id) {
-    setState((s) => ({ ...s, activeId: id }));
-  }
-
-  function pickFromOverview(id) {
-    selectZone(id);
-    setView('detail');
+  function setViewAndSelect(nextView, zoneId) {
+    if (zoneId) setState((s) => ({ ...s, activeId: zoneId }));
+    setView(nextView);
   }
 
   function importZones(imported) {
     if (imported.length === 0) return;
     setState((s) => ({ zones: [...s.zones, ...imported], activeId: imported[0].id }));
+    setView('detail');
+  }
+
+  function createFromReference(ref) {
+    const id = makeId();
+    const rate = ref.rate ?? averageKnownRate();
+    const zone = {
+      ...emptyZone(id, `${ref.name} (${ref.short})`),
+      location: ref.gu,
+      stage: ref.stage,
+      rate: String(rate),
+      mult: ref.mult != null ? String(ref.mult) : '1.3',
+      note: `참고: ${ref.source}${ref.rate == null ? ' · 비례율은 공개 전이라 확인된 구역 평균으로 채움' : ''}`,
+    };
+    setState((s) => ({ zones: [...s.zones, zone], activeId: id }));
     setView('detail');
   }
 
@@ -125,16 +138,17 @@ export default function App() {
       <ZoneRail
         zones={state.zones}
         activeId={activeZone?.id}
-        onSelect={selectZone}
         onAdd={addZone}
         onRemove={removeZone}
         view={view}
-        onToggleView={() => setView((v) => (v === 'overview' ? 'detail' : 'overview'))}
+        onSetView={setViewAndSelect}
       />
 
       <main className="container main">
         {view === 'overview' ? (
-          <ZoneOverview zones={state.zones} onPick={pickFromOverview} />
+          <ZoneOverview zones={state.zones} onPick={(id) => setViewAndSelect('detail', id)} />
+        ) : view === 'reference' ? (
+          <ReferencePanel onApply={createFromReference} />
         ) : (
           activeZone && (
             <>
