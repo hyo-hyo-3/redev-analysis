@@ -85,7 +85,7 @@ export default function MapView() {
   return (
     <section className="panel map-view">
       <header className="scenario__head">
-        <h3>지도</h3>
+        <h3>서울시 재개발 한눈에 보기</h3>
         <p className="scenario__caption">
           좌표가 확인된 {mappable.length}곳만 표시됩니다({allZones.length - mappable.length}곳은 조합 번호뿐인
           이름이라 정확한 위치를 아직 못 찾았습니다). 체크를 해제하면 지도에서 바로 빠집니다.
