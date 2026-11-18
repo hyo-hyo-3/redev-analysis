@@ -8,9 +8,26 @@ const FILTERS = [
   ['shintong', '신통기획'],
 ];
 
+const PAGE_SIZE = 12;
+
 export default function ReferencePanel({ onApply }) {
   const [filter, setFilter] = useState('all');
-  const zones = allZones.filter((z) => filter === 'all' || z.group === filter);
+  const [page, setPage] = useState(1);
+
+  function changeFilter(key) {
+    setFilter(key);
+    setPage(1);
+  }
+
+  const filtered = allZones.filter((z) => filter === 'all' || z.group === filter);
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(page, pageCount);
+  const zones = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
+  function goToPage(n) {
+    const next = Math.min(Math.max(1, n), pageCount);
+    setPage(next);
+  }
 
   return (
     <section className="panel reference">
@@ -35,7 +52,7 @@ export default function ReferencePanel({ onApply }) {
               type="button"
               className="chip chip--filter"
               aria-pressed={filter === key}
-              onClick={() => setFilter(key)}
+              onClick={() => changeFilter(key)}
             >
               {label} {n}
             </button>
@@ -115,6 +132,20 @@ export default function ReferencePanel({ onApply }) {
           </article>
         ))}
       </div>
+
+      {pageCount > 1 && (
+        <nav className="pager" aria-label="전체 구역 페이지">
+          <button type="button" className="btn btn--quiet btn--sm" onClick={() => goToPage(currentPage - 1)} disabled={currentPage <= 1}>
+            이전
+          </button>
+          <span className="pager__status">
+            {currentPage} / {pageCount} 페이지 · {filtered.length}곳
+          </span>
+          <button type="button" className="btn btn--quiet btn--sm" onClick={() => goToPage(currentPage + 1)} disabled={currentPage >= pageCount}>
+            다음
+          </button>
+        </nav>
+      )}
     </section>
   );
 }

@@ -319,3 +319,6 @@
 .ref-card__source { font-size: var(--text-xs); color: var(--color-muted); }
 .ref-card__source a { text-decoration: underline; text-decoration-color: var(--color-rule-2); }
 .ref-card__source a:hover { color: var(--color-accent); text-decoration-color: var(--color-accent); }
+
+.pager { display: flex; align-items: center; justify-content: center; gap: var(--space-md); padding-top: var(--space-sm); }
+.pager__status { font-size: var(--text-sm); color: var(--color-muted); }
