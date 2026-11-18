@@ -15,10 +15,10 @@ export default function ReferencePanel({ onApply }) {
   return (
     <section className="panel reference">
       <header className="scenario__head">
-        <h3>참고 구역</h3>
+        <h3>전체 구역</h3>
         <p className="scenario__caption">
-          뉴스·고시문 등 공개 자료에서 뽑은 추정치입니다. 확정 값은 각 구역의 관리처분계획(안)에서 나오니, 출처를 직접
-          확인하세요.
+          서울시 재개발 구역 소식을 모아 둡니다. 뉴스·고시문 등 공개 자료에서 뽑은 추정치이니, 확정 값은 각 구역의
+          관리처분계획(안)에서 나오는 값을 출처 링크로 직접 확인하세요.
         </p>
         <p className="reference__glossary">
           <b>공공재개발</b> LH·SH가 시행에 참여합니다. <b>신통기획</b> 서울시가 정비계획 초기부터 가이드라인을 주는

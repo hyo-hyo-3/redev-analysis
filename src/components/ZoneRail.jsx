@@ -20,10 +20,10 @@ export default function ZoneRail({ zones, activeId, onSelect, onAdd, onRemove, v
         {inDetail ? (
           <>
             <button type="button" className="btn btn--quiet btn--sm" onClick={() => onSetView('overview')}>
-              전체 구역 보기
+              내 구역 비교
             </button>
             <button type="button" className="btn btn--quiet btn--sm" onClick={() => onSetView('reference')}>
-              참고 구역
+              전체 구역
             </button>
             {zones.length > 0 && (
               <button type="button" className="btn btn--quiet btn--danger btn--sm" onClick={() => onRemove(activeId)}>

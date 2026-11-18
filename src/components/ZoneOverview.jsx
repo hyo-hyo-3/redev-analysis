@@ -13,8 +13,8 @@ export default function ZoneOverview({ zones, onPick }) {
   return (
     <section className="panel scenario overview">
       <header className="scenario__head">
-        <h3>전체 구역 보기</h3>
-        <p className="scenario__caption">등록한 구역 {zones.length}곳을 한눈에 비교합니다. 행을 누르면 그 구역으로 이동합니다.</p>
+        <h3>내 구역 비교</h3>
+        <p className="scenario__caption">내가 등록한 구역 {zones.length}곳을 한눈에 비교합니다. 행을 누르면 그 구역으로 이동합니다.</p>
       </header>
       <div className="scenario__scroll">
         <table>

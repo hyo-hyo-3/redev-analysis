@@ -8,8 +8,8 @@ export default function ResultPanel({ zone, result, missing }) {
   if (missing.length > 0) {
     return (
       <section className="panel reading reading--empty">
-        <h3>아직 계산할 수 없습니다</h3>
-        <p>다음 항목을 먼저 입력하세요.</p>
+        <h3>사업성 분석</h3>
+        <p>아직 계산할 수 없습니다. 다음 항목을 먼저 입력하세요.</p>
         <ul className="missing-list">
           {missing.map((m) => (
             <li key={m}>{m}</li>
@@ -24,9 +24,10 @@ export default function ResultPanel({ zone, result, missing }) {
   return (
     <section className="panel reading">
       <header className="reading__head">
-        <h3>분담금</h3>
+        <h3>사업성 분석</h3>
         <span className={'chip chip--lg ' + gradeClass(verdict)}>종합판정 {gradeLabel(verdict)}</span>
       </header>
+      <p className="reading__sublabel">분담금</p>
       <p className="reading__value measured" aria-live="polite">
         {moneyKo(cur.contribution)}
       </p>
