@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { referenceZones } from '../referenceZones.js';
+import { allZones } from '../referenceZones.js';
 import { moneyKo } from '../calc.js';
 
 const FILTERS = [
@@ -10,7 +10,7 @@ const FILTERS = [
 
 export default function ReferencePanel({ onApply }) {
   const [filter, setFilter] = useState('all');
-  const zones = referenceZones.filter((z) => filter === 'all' || z.group === filter);
+  const zones = allZones.filter((z) => filter === 'all' || z.group === filter);
 
   return (
     <section className="panel reference">
@@ -28,7 +28,7 @@ export default function ReferencePanel({ onApply }) {
 
       <div className="rail-filters" role="group" aria-label="구역 분류">
         {FILTERS.map(([key, label]) => {
-          const n = key === 'all' ? referenceZones.length : referenceZones.filter((z) => z.group === key).length;
+          const n = key === 'all' ? allZones.length : allZones.filter((z) => z.group === key).length;
           return (
             <button
               key={key}
@@ -50,6 +50,7 @@ export default function ReferencePanel({ onApply }) {
               <div>
                 <h4>{z.name}</h4>
                 <p className="ref-card__meta">
+                  {z.region ? `${z.region} · ` : ''}
                   {z.gu} · {z.kind}
                   {z.old ? ' · 오래된 자료' : ''}
                 </p>
@@ -109,7 +110,7 @@ export default function ReferencePanel({ onApply }) {
             </details>
 
             <button type="button" className="btn btn--sm" onClick={() => onApply(z)}>
-              이 비례율로 새 구역 만들기
+              {z.rate != null ? '이 비례율로 새 구역 만들기' : '평균 비례율로 새 구역 만들기'}
             </button>
           </article>
         ))}
