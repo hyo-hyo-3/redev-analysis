@@ -42,24 +42,3 @@ export function emptyZone(id, name = '') {
 export function makeId() {
   return 'z' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
 }
-
-const POSTS_KEY = 'redev-analysis:posts:v1';
-
-export function loadPosts() {
-  try {
-    const raw = window.localStorage.getItem(POSTS_KEY);
-    if (!raw) return [];
-    const data = JSON.parse(raw);
-    return Array.isArray(data) ? data : [];
-  } catch {
-    return [];
-  }
-}
-
-export function savePosts(posts) {
-  try {
-    window.localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
-  } catch {
-    // 저장 공간을 쓸 수 없는 환경에서는 조용히 건너뜁니다.
-  }
-}

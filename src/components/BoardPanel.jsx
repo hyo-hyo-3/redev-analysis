@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { loadPosts, savePosts, makeId } from '../storage.js';
+import { supabase } from '../supabaseClient.js';
 
 const PAGE_SIZE = 10;
 
@@ -8,20 +8,61 @@ function formatDate(iso) {
 }
 
 export default function BoardPanel() {
-  const [posts, setPosts] = useState(loadPosts);
+  const [posts, setPosts] = useState([]);
+  const [status, setStatus] = useState('loading');
   const [mode, setMode] = useState('list');
   const [activeId, setActiveId] = useState(null);
+  const [comments, setComments] = useState([]);
+  const [commentStatus, setCommentStatus] = useState('idle');
   const [page, setPage] = useState(1);
   const [draft, setDraft] = useState({ title: '', author: '', content: '' });
+  const [commentDraft, setCommentDraft] = useState({ author: '', content: '' });
 
   useEffect(() => {
-    savePosts(posts);
-  }, [posts]);
+    if (!supabase) {
+      setStatus('unconfigured');
+      return;
+    }
+    let cancelled = false;
+    supabase
+      .from('posts')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(200)
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        if (error) {
+          setStatus('error');
+          return;
+        }
+        setPosts(data ?? []);
+        setStatus('ready');
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
-  const sorted = [...posts].sort((a, b) => (a.date < b.date ? 1 : -1));
-  const pageCount = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
+  function loadComments(postId) {
+    setCommentStatus('loading');
+    supabase
+      .from('comments')
+      .select('*')
+      .eq('post_id', postId)
+      .order('created_at', { ascending: true })
+      .then(({ data, error }) => {
+        if (error) {
+          setCommentStatus('error');
+          return;
+        }
+        setComments(data ?? []);
+        setCommentStatus('ready');
+      });
+  }
+
+  const pageCount = Math.max(1, Math.ceil(posts.length / PAGE_SIZE));
   const currentPage = Math.min(page, pageCount);
-  const pageItems = sorted.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+  const pageItems = posts.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
   const activePost = posts.find((p) => p.id === activeId);
 
   function startWrite() {
@@ -29,28 +70,86 @@ export default function BoardPanel() {
     setMode('write');
   }
 
-  function submitPost(e) {
+  async function submitPost(e) {
     e.preventDefault();
     if (!draft.title.trim() || !draft.content.trim()) return;
-    const post = {
-      id: makeId(),
-      title: draft.title.trim(),
-      author: draft.author.trim() || '익명',
-      content: draft.content.trim(),
-      date: new Date().toISOString(),
-    };
-    setPosts((p) => [post, ...p]);
+    const { data, error } = await supabase
+      .from('posts')
+      .insert({
+        title: draft.title.trim(),
+        author: draft.author.trim() || '익명',
+        content: draft.content.trim(),
+      })
+      .select()
+      .single();
+    if (error) {
+      window.alert('등록에 실패했습니다: ' + error.message);
+      return;
+    }
+    setPosts((p) => [data, ...p]);
     setMode('list');
   }
 
   function openPost(id) {
     setActiveId(id);
     setMode('detail');
+    setCommentDraft({ author: '', content: '' });
+    loadComments(id);
   }
 
-  function deletePost(id) {
-    setPosts((p) => p.filter((x) => x.id !== id));
-    setMode('list');
+  async function submitComment(e) {
+    e.preventDefault();
+    if (!commentDraft.content.trim()) return;
+    const { data, error } = await supabase
+      .from('comments')
+      .insert({
+        post_id: activeId,
+        author: commentDraft.author.trim() || '익명',
+        content: commentDraft.content.trim(),
+      })
+      .select()
+      .single();
+    if (error) {
+      window.alert('댓글 등록에 실패했습니다: ' + error.message);
+      return;
+    }
+    setComments((c) => [...c, data]);
+    setCommentDraft({ author: '', content: '' });
+  }
+
+  if (status === 'unconfigured') {
+    return (
+      <section className="panel board">
+        <header className="scenario__head">
+          <h3>재개발 토론장</h3>
+        </header>
+        <p className="board__empty">아직 게시판 연결 설정(.env의 Supabase 주소·키)이 안 되어 있습니다.</p>
+      </section>
+    );
+  }
+
+  if (status === 'loading') {
+    return (
+      <section className="panel board">
+        <header className="scenario__head">
+          <h3>재개발 토론장</h3>
+        </header>
+        <p className="board__empty">글을 불러오는 중입니다…</p>
+      </section>
+    );
+  }
+
+  if (status === 'error') {
+    return (
+      <section className="panel board">
+        <header className="scenario__head">
+          <h3>재개발 토론장</h3>
+        </header>
+        <p className="board__empty">
+          글을 불러오지 못했습니다. sql/board_schema.sql을 Supabase SQL Editor에서 먼저 실행했는지 확인해주세요.
+        </p>
+      </section>
+    );
   }
 
   if (mode === 'write') {
@@ -114,7 +213,7 @@ export default function BoardPanel() {
         <header className="scenario__head">
           <h3>{activePost.title}</h3>
           <p className="scenario__caption">
-            {activePost.author} · {formatDate(activePost.date)}
+            {activePost.author} · {formatDate(activePost.created_at)}
           </p>
         </header>
         <p className="board__content">{activePost.content}</p>
@@ -122,9 +221,50 @@ export default function BoardPanel() {
           <button type="button" className="btn btn--quiet btn--sm" onClick={() => setMode('list')}>
             목록으로
           </button>
-          <button type="button" className="btn btn--quiet btn--danger btn--sm" onClick={() => deletePost(activePost.id)}>
-            삭제
-          </button>
+        </div>
+
+        <div className="board__comments">
+          <h4 className="board__commentsTitle">
+            댓글 {commentStatus === 'ready' ? comments.length : ''}
+          </h4>
+          {commentStatus === 'loading' && <p className="board__empty">댓글을 불러오는 중입니다…</p>}
+          {commentStatus === 'error' && <p className="board__empty">댓글을 불러오지 못했습니다.</p>}
+          {commentStatus === 'ready' && comments.length === 0 && (
+            <p className="board__empty">아직 댓글이 없습니다. 첫 댓글을 남겨보세요.</p>
+          )}
+          {commentStatus === 'ready' && comments.length > 0 && (
+            <ul className="board__commentList">
+              {comments.map((c) => (
+                <li key={c.id} className="board__comment">
+                  <p className="board__commentMeta">
+                    {c.author} · {formatDate(c.created_at)}
+                  </p>
+                  <p className="board__commentContent">{c.content}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <form className="board__commentForm" onSubmit={submitComment}>
+            <div className="field__row">
+              <input
+                value={commentDraft.author}
+                placeholder="글쓴이 (선택, 비워 두면 익명)"
+                onChange={(e) => setCommentDraft((d) => ({ ...d, author: e.target.value }))}
+              />
+            </div>
+            <div className="field__row">
+              <input
+                value={commentDraft.content}
+                placeholder="댓글을 입력하세요"
+                onChange={(e) => setCommentDraft((d) => ({ ...d, content: e.target.value }))}
+                required
+              />
+              <button type="submit" className="btn btn--sm">
+                등록
+              </button>
+            </div>
+          </form>
         </div>
       </section>
     );
@@ -133,10 +273,8 @@ export default function BoardPanel() {
   return (
     <section className="panel board">
       <header className="scenario__head">
-        <h3>자유게시판</h3>
-        <p className="scenario__caption">
-          이 기기에만 저장됩니다. 다른 기기나 다른 사람과는 아직 공유되지 않습니다.
-        </p>
+        <h3>재개발 토론장</h3>
+        <p className="scenario__caption">구역 정보나 사업성에 대한 생각을 나누는 곳입니다. 누구나 읽고 쓸 수 있습니다.</p>
       </header>
 
       <div className="board__toolbar">
@@ -145,7 +283,7 @@ export default function BoardPanel() {
         </button>
       </div>
 
-      {sorted.length === 0 ? (
+      {posts.length === 0 ? (
         <p className="board__empty">아직 작성된 글이 없습니다. 첫 글을 남겨보세요.</p>
       ) : (
         <ul className="board__list">
@@ -155,7 +293,7 @@ export default function BoardPanel() {
                 <h4>{p.title}</h4>
                 <p className="board__excerpt">{p.content.slice(0, 80)}</p>
                 <p className="news__source">
-                  {p.author} · {formatDate(p.date)}
+                  {p.author} · {formatDate(p.created_at)}
                 </p>
               </button>
             </li>
@@ -164,7 +302,7 @@ export default function BoardPanel() {
       )}
 
       {pageCount > 1 && (
-        <nav className="pager" aria-label="자유게시판 페이지">
+        <nav className="pager" aria-label="재개발 토론장 페이지">
           <button
             type="button"
             className="btn btn--quiet btn--sm"
@@ -174,7 +312,7 @@ export default function BoardPanel() {
             이전
           </button>
           <span className="pager__status">
-            {currentPage} / {pageCount} 페이지 · {sorted.length}건
+            {currentPage} / {pageCount} 페이지 · {posts.length}건
           </span>
           <button
             type="button"

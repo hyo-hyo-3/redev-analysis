@@ -3,7 +3,7 @@ const TABS = [
   ['overview', '내 구역 비교'],
   ['reference', '전체 구역'],
   ['news', '재개발 소식'],
-  ['board', '자유게시판'],
+  ['board', '재개발 토론장'],
 ];
 
 export default function TopTabs({ view, onSetView }) {
